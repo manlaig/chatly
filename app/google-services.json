@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "895450420682",
+    "firebase_url": "https://chatly-manlaig.firebaseio.com",
+    "project_id": "chatly-manlaig",
+    "storage_bucket": "chatly-manlaig.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:895450420682:android:79447d5ae099da6b",
+        "android_client_info": {
+          "package_name": "com.example.android.chatly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "895450420682-63dhlutfpfb58udfo9ja5m4grtl41l7u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.chatly",
+            "certificate_hash": "da8c4ff5386e3c8eeb9a6aac7cd6373bae014629"
+          }
+        },
+        {
+          "client_id": "895450420682-3vi5r5n5jkago29fvu2bqlu8bideolee.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD49EF2KlZRNuY_VocVLFI414uJrNR19Us"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "895450420682-3vi5r5n5jkago29fvu2bqlu8bideolee.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
