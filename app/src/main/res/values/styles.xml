@@ -6,6 +6,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:colorButtonNormal">@drawable/button_state_selector</item>
+        <item name="colorButtonNormal">@drawable/button_state_selector</item>
+        <item name="buttonStyle">@style/buttonStyle</item>
+    </style>
+
+    <style name="buttonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">#ffffff</item>
     </style>
 
 </resources>

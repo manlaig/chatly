@@ -2,8 +2,11 @@ package com.example.android.chatly;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -36,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initializeAllInstanceVariables();
+        addListenerToEditText();
+        attachClickListenerToSendButton();
     }
 
     private void initializeAllInstanceVariables()
@@ -44,9 +49,7 @@ public class MainActivity extends AppCompatActivity {
         imageButton = findViewById(R.id.photoPickerButton);
         editTextField = findViewById(R.id.messageEditText);
         sendButton = findViewById(R.id.sendButton);
-
         username = ANONYMOUS;
-
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("messages");
@@ -58,6 +61,35 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    private void addListenerToEditText()
+    {
+        editTextField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.toString().trim().length() > 0)
+                    sendButton.setEnabled(true);
+                else
+                    sendButton.setEnabled(false);
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+    }
+
+    private void attachClickListenerToSendButton()
+    {
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
 }
