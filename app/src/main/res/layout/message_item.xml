@@ -14,7 +14,7 @@
         android:adjustViewBounds="true"/>
 
     <TextView
-        android:id="@+id/message_field"
+        android:id="@+id/text_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Message"

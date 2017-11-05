@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -15,6 +16,8 @@ import android.widget.ListView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private Button sendButton;
 
     private String username;
+    private ArrayList<Message> messageList;
+    private ArrayAdapter<Message> messageAdapter;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
@@ -38,9 +43,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //I've split the code into many small methods to simplify the onCreate method
+        // and increase readability
         initializeAllInstanceVariables();
         addListenerToEditText();
         attachClickListenerToSendButton();
+        initializeAndSetArrayAdapter();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     private void initializeAllInstanceVariables()
@@ -53,14 +70,6 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("messages");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_main, menu);
-        return true;
     }
 
     private void addListenerToEditText()
@@ -90,6 +99,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void initializeAndSetArrayAdapter()
+    {
+        messageList = new ArrayList<>();
+        messageAdapter = new ArrayAdapter<>(this, R.layout.message_item, messageList);
+        messageListView.setAdapter(messageAdapter);
     }
 
 }
