@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,10 +57,9 @@ public class MainActivity extends AppCompatActivity {
         initializeInstanceVariables();
         initializeAndSetArrayAdapter();
         initializeFirebaseVariables();
+        authorizeAndManageStates();
         addListenerToEditText();
         attachClickListenerToSendButton();
-        //attachListenerToDatabaseReference();
-        authorizeAndManageStates();
     }
 
 
@@ -73,13 +73,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //This method called when the user opens the menu and presses sign out
+        switch(item.getItemId())
+        {
+            case R.id.sign_out_button:
+                AuthUI.getInstance().signOut(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
     private void initializeInstanceVariables()
     {
         messageListView = findViewById(R.id.messageListView);
         imageButton = findViewById(R.id.photoPickerButton);
         editTextField = findViewById(R.id.messageEditText);
         sendButton = findViewById(R.id.sendButton);
-        username = ANONYMOUS;
     }
 
 
