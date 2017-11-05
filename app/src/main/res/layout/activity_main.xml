@@ -12,13 +12,15 @@
 
     <ListView
         android:id="@+id/messageListView"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
         android:layout_above="@id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:divider="@android:color/transparent"
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll"
-        tools:listitem="@layout/message_item"/>
+        tools:listitem="@layout/message_item" />
 
     <LinearLayout
         android:id="@+id/linearlayout"
