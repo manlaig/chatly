@@ -16,10 +16,11 @@ import java.util.ArrayList;
  * Created by manlai on 11/5/2017.
  */
 
-public class MessageAdapter extends ArrayAdapter
+public class MessageAdapter extends ArrayAdapter<Message>
 {
     private View viewToConvertToMessage;
-    private TextView text, name;
+    private TextView text;
+    private TextView name;
     private ImageView image;
     private Message message;
     private boolean hasPhoto;
@@ -38,7 +39,7 @@ public class MessageAdapter extends ArrayAdapter
         inflateViewToMessageItem(parent);
         initializeMessageFields();
 
-        message = (Message) getItem(position);
+        message = getItem(position);
         hasPhoto = message.getPhotoURL() != null;
 
         drawMessage();

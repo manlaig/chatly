@@ -10,6 +10,11 @@ public class Message
     private String name;
     private String photoURL;
 
+    public Message()
+    {
+
+    }
+
     public Message(String text, String name, String photoURL)
     {
         this.text = text;

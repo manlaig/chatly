@@ -7,7 +7,6 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -34,13 +33,14 @@ public class MainActivity extends AppCompatActivity {
 
     private String username;
     private ArrayList<Message> messageList;
-    private ArrayAdapter<Message> messageAdapter;
+    private MessageAdapter messageAdapter;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private FirebaseAuth.AuthStateListener authStateListener;
     private ChildEventListener childEventListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +49,14 @@ public class MainActivity extends AppCompatActivity {
 
         //I've split the code into many small methods to simplify the onCreate method
         // and increase readability
-        initializeAllInstanceVariables();
+        initializeInstanceVariables();
+        initializeAndSetArrayAdapter();
+        initializeFirebaseVariables();
         addListenerToEditText();
         attachClickListenerToSendButton();
-        initializeAndSetArrayAdapter();
-        setChildEventListenerToMessages();
+        attachListenerToDatabaseReference();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -65,17 +67,24 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void initializeAllInstanceVariables()
+
+    private void initializeInstanceVariables()
     {
         messageListView = findViewById(R.id.messageListView);
         imageButton = findViewById(R.id.photoPickerButton);
         editTextField = findViewById(R.id.messageEditText);
         sendButton = findViewById(R.id.sendButton);
         username = ANONYMOUS;
+    }
+
+
+    private void initializeFirebaseVariables()
+    {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("messages");
     }
+
 
     private void addListenerToEditText()
     {
@@ -96,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private void attachClickListenerToSendButton()
     {
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -108,38 +118,55 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private void initializeAndSetArrayAdapter()
     {
         messageList = new ArrayList<>();
-        messageAdapter = new ArrayAdapter<>(this, R.layout.message_item, messageList);
+        messageAdapter = new MessageAdapter(this, R.layout.message_item, messageList);
         messageListView.setAdapter(messageAdapter);
     }
 
-    private void setChildEventListenerToMessages()
-    {
+
+    private void attachListenerToDatabaseReference() {
         //This method attaches an EventListener to 'Messages' reference in the database,
         //so that whenever a new message gets added to database, we get notified. And we display it
-
-        childEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Message tempMessage = dataSnapshot.getValue(Message.class);
-                messageAdapter.add(tempMessage);
-            }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        };
-        databaseReference.addChildEventListener(childEventListener);
+        if (childEventListener == null) {
+            childEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Message tempMessage = dataSnapshot.getValue(Message.class);
+                    messageAdapter.add(tempMessage);
+                }
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                }
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                }
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+            databaseReference.addChildEventListener(childEventListener);
+        }
     }
 
+
+    /*@Override
+    protected void onPause() {
+        super.onPause();
+        if(childEventListener != null)
+            databaseReference.removeEventListener(childEventListener);
+        childEventListener = null;
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        attachClickListenerToSendButton();
+    }*/
 }
