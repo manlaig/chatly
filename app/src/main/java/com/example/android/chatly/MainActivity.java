@@ -14,6 +14,9 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private FirebaseAuth.AuthStateListener authStateListener;
+    private ChildEventListener childEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +53,13 @@ public class MainActivity extends AppCompatActivity {
         addListenerToEditText();
         attachClickListenerToSendButton();
         initializeAndSetArrayAdapter();
-
+        setChildEventListenerToMessages();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
+        //When we override this method, we can display our custom menu on the screen
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_main, menu);
         return true;
@@ -98,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String textInEditText = editTextField.getText().toString();
                 databaseReference.push().setValue(new Message(textInEditText, username, null));
-                //messageAdapter.add(new Message(textInEditText, username, null));
                 editTextField.setText("");
             }
         });
@@ -109,6 +113,33 @@ public class MainActivity extends AppCompatActivity {
         messageList = new ArrayList<>();
         messageAdapter = new ArrayAdapter<>(this, R.layout.message_item, messageList);
         messageListView.setAdapter(messageAdapter);
+    }
+
+    private void setChildEventListenerToMessages()
+    {
+        //This method attaches an EventListener to 'Messages' reference in the database,
+        //so that whenever a new message gets added to database, we get notified. And we display it
+
+        childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Message tempMessage = dataSnapshot.getValue(Message.class);
+                messageAdapter.add(tempMessage);
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        databaseReference.addChildEventListener(childEventListener);
     }
 
 }
