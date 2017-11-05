@@ -1,5 +1,6 @@
 package com.example.android.chatly;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +31,10 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     public static final String ANONYMOUS = "anonymous";
+    //request code sent using FirebaseUI for signing in
     public static final int RC_SIGN_IN = 1;
+    //request code for opening the photo picker when the photoPicker button is clicked
+    public static final int RC_PHOTO_PICKER = 2;
 
     private ListView messageListView;
     private ImageButton imageButton;
@@ -60,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         authorizeAndManageStates();
         addListenerToEditText();
         attachClickListenerToSendButton();
+        setClickListenerOnPhotoPicker();
     }
 
 
@@ -85,6 +91,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RC_SIGN_IN)
+        {
+            if(resultCode == RESULT_CANCELED)
+                finish();
+            else
+                Toast.makeText(this, "Successfully signed it!", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     private void initializeInstanceVariables()
     {
@@ -136,6 +154,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void setClickListenerOnPhotoPicker()
+    {
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/jpeg");
+                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                startActivityForResult(Intent.createChooser(intent, "Complete Action Using"), RC_PHOTO_PICKER);
+            }
+        });
+    }
+
+
     private void initializeAndSetArrayAdapter()
     {
         messageList = new ArrayList<>();
@@ -177,15 +209,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void authorizeAndManageStates()
     {
+        //This complicated method implements the AuthStateListener interface and attaches it to firebaseAuth
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                //Overriding this method returns either a value if signed in and NULL if not signed it
                 if(user != null)
+                    //if signed in, we initialize the screen for them
                     onSignedInInitialize(user.getDisplayName());
                 else
                 {
                     onSignedOutCleanUp();
+
+                    //if not signed in, we use FirebaseUI to display a sign in screen
                     startActivityForResult(
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder()
@@ -215,20 +253,5 @@ public class MainActivity extends AppCompatActivity {
         username = ANONYMOUS;
         messageAdapter.clear();
     }
-
-    /*@Override
-    protected void onPause() {
-        super.onPause();
-        if(childEventListener != null)
-            databaseReference.removeEventListener(childEventListener);
-        childEventListener = null;
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        attachClickListenerToSendButton();
-    }*/
 
 }
