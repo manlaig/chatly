@@ -1,6 +1,7 @@
 package com.example.android.chatly;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,7 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
         initializeFirebaseVariables();
         addListenerToEditText();
         attachClickListenerToSendButton();
-        attachListenerToDatabaseReference();
+        //attachListenerToDatabaseReference();
+        authorizeAndManageStates();
     }
 
 
@@ -128,8 +133,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void attachListenerToDatabaseReference() {
+        //This method is called when the user is signed in and authorized
+
         //This method attaches an EventListener to 'Messages' reference in the database,
         //so that whenever a new message gets added to database, we get notified. And we display it
+
         if (childEventListener == null) {
             childEventListener = new ChildEventListener() {
                 @Override
@@ -155,6 +163,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void authorizeAndManageStates()
+    {
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if(user != null)
+                    onSignedInInitialize(user.getDisplayName());
+                else
+                {
+                    onSignedOutCleanUp();
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setAvailableProviders(
+                                            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                                    new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
+                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                    .build(),
+                            RC_SIGN_IN);
+                }
+            }
+        };
+        firebaseAuth.addAuthStateListener(authStateListener);
+    }
+
+
+    private void onSignedInInitialize(String username)
+    {
+        this.username = username;
+        attachListenerToDatabaseReference();
+    }
+
+
+    private void onSignedOutCleanUp()
+    {
+        username = ANONYMOUS;
+        messageAdapter.clear();
+    }
+
     /*@Override
     protected void onPause() {
         super.onPause();
@@ -169,4 +218,5 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         attachClickListenerToSendButton();
     }*/
+
 }
