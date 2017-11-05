@@ -96,7 +96,10 @@ public class MainActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                String textInEditText = editTextField.getText().toString();
+                databaseReference.push().setValue(new Message(textInEditText, username, null));
+                //messageAdapter.add(new Message(textInEditText, username, null));
+                editTextField.setText("");
             }
         });
     }
