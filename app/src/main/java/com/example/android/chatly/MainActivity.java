@@ -1,6 +1,7 @@
 package com.example.android.chatly;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
+    private FirebaseStorage firebaseStorage;
     private DatabaseReference databaseReference;
+    private StorageReference storageReference;
     private FirebaseAuth.AuthStateListener authStateListener;
     private ChildEventListener childEventListener;
 
@@ -102,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
             else
                 Toast.makeText(this, "Successfully signed it!", Toast.LENGTH_SHORT).show();
         }
+        else if(requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK)
+        {
+            storePhotoAndDisplay(data);
+        }
     }
 
     private void initializeInstanceVariables()
@@ -113,11 +122,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void initializeAndSetArrayAdapter()
+    {
+        messageList = new ArrayList<>();
+        messageAdapter = new MessageAdapter(this, R.layout.message_item, messageList);
+        messageListView.setAdapter(messageAdapter);
+    }
+
+
     private void initializeFirebaseVariables()
     {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
         databaseReference = firebaseDatabase.getReference().child("messages");
+        storageReference = firebaseStorage.getReference().child("chat-photos");
     }
 
 
@@ -168,14 +187,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void initializeAndSetArrayAdapter()
-    {
-        messageList = new ArrayList<>();
-        messageAdapter = new MessageAdapter(this, R.layout.message_item, messageList);
-        messageListView.setAdapter(messageAdapter);
-    }
-
-
     private void attachListenerToDatabaseReference() {
         //This method is called when the user is signed in and authorized
 
@@ -209,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void authorizeAndManageStates()
     {
-        //This complicated method implements the AuthStateListener interface and attaches it to firebaseAuth
+        //This method implements the AuthStateListener interface and attaches it to firebaseAuth
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -217,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
 
                 //Overriding this method returns either a value if signed in and NULL if not signed it
                 if(user != null)
-                    //if signed in, we initialize the screen for them
                     onSignedInInitialize(user.getDisplayName());
                 else
                 {
@@ -252,6 +262,14 @@ public class MainActivity extends AppCompatActivity {
     {
         username = ANONYMOUS;
         messageAdapter.clear();
+    }
+
+
+    private void storePhotoAndDisplay(Intent data)
+    {
+        Uri downloadUri = data.getData();
+        Message tempMessage = new Message(null, username, downloadUri.toString());
+        databaseReference.push().setValue(tempMessage);
     }
 
 }
