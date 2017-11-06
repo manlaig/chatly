@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -27,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //when we request from Firebase and a result comes back,
+        //that result is sent using this method with the result
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RC_SIGN_IN)
         {
@@ -234,8 +238,7 @@ public class MainActivity extends AppCompatActivity {
                     onSignedOutCleanUp();
 
                     //if not signed in, we use FirebaseUI to display a sign in screen
-                    startActivityForResult(
-                            AuthUI.getInstance()
+                    startActivityForResult(AuthUI.getInstance()
                                     .createSignInIntentBuilder()
                                     .setIsSmartLockEnabled(false)
                                     .setAvailableProviders(
@@ -267,9 +270,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void storePhotoAndDisplay(Intent data)
     {
-        Uri downloadUri = data.getData();
-        Message tempMessage = new Message(null, username, downloadUri.toString());
-        databaseReference.push().setValue(tempMessage);
+        Uri chosenPhotoUri = data.getData();
+        StorageReference storageReferenceToSave = storageReference.child(chosenPhotoUri.getLastPathSegment());
+        storageReferenceToSave.putFile(chosenPhotoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Uri downloadUriInStorage = taskSnapshot.getDownloadUrl();
+                databaseReference.push().setValue(new Message(null, username, downloadUriInStorage.toString()));
+            }
+        });
     }
 
 }

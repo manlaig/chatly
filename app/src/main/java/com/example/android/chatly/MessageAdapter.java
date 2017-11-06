@@ -48,11 +48,10 @@ public class MessageAdapter extends ArrayAdapter<Message>
     }
 
 
-    private View inflateViewToMessageItem(ViewGroup parent)
+    private void inflateViewToMessageItem(ViewGroup parent)
     {
         if(viewToConvertToMessage == null)
             viewToConvertToMessage = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.message_item, parent, false);
-        return viewToConvertToMessage;
     }
 
 
