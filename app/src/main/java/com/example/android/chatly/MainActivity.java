@@ -192,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void attachListenerToDatabaseReference() {
-        //This method is called when the user is signed in and authorized
 
         //This method attaches an EventListener to 'Messages' reference in the database,
         //so that whenever a new message gets added to database, we get notified. And we display it
@@ -224,7 +223,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void authorizeAndManageStates()
     {
-        //This method implements the AuthStateListener interface and attaches it to firebaseAuth
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
