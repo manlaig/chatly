@@ -36,10 +36,9 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     public static final String ANONYMOUS = "anonymous";
-    //request code sent using FirebaseUI for signing in
-    public static final int RC_SIGN_IN = 1;
-    //request code for opening the photo picker when the photoPicker button is clicked
-    public static final int RC_PHOTO_PICKER = 2;
+    
+    public static final int SIGN_IN_REQUEST_CODE = 1;
+    public static final int PHOTO_PICKER_REQUEST_CODE = 2;
 
     private ListView messageListView;
     private ImageButton imageButton;
@@ -104,14 +103,14 @@ public class MainActivity extends AppCompatActivity {
         //when we request from Firebase and a result comes back,
         //that result is sent using this method with the result
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RC_SIGN_IN)
+        if(requestCode == SIGN_IN_REQUEST_CODE)
         {
             if(resultCode == RESULT_CANCELED)
                 finish();
             else
                 Toast.makeText(this, "Successfully signed it!", Toast.LENGTH_SHORT).show();
         }
-        else if(requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK)
+        else if(requestCode == PHOTO_PICKER_REQUEST_CODE && resultCode == RESULT_OK)
         {
             storePhotoAndDisplay(data);
         }
@@ -185,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/jpeg");
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                startActivityForResult(Intent.createChooser(intent, "Complete Action Using"), RC_PHOTO_PICKER);
+                startActivityForResult(Intent.createChooser(intent, "Complete Action Using"), PHOTO_PICKER_REQUEST_CODE);
             }
         });
     }
@@ -242,9 +241,7 @@ public class MainActivity extends AppCompatActivity {
                                     .setAvailableProviders(
                                             Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                                                     new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
-                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                                    .build(),
-                            RC_SIGN_IN);
+                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build())).build(), SIGN_IN_REQUEST_CODE);
                 }
             }
         };
