@@ -36,7 +36,7 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     public static final String ANONYMOUS = "anonymous";
-    
+
     public static final int SIGN_IN_REQUEST_CODE = 1;
     public static final int PHOTO_PICKER_REQUEST_CODE = 2;
 
@@ -191,9 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void attachListenerToDatabaseReference() {
-
-        //This method attaches an EventListener to 'Messages' reference in the database,
-        //so that whenever a new message gets added to database, we get notified. And we display it
+        //whenever a new message gets added to database, this method notifies us. And we display it
 
         if (childEventListener == null) {
             childEventListener = new ChildEventListener() {
