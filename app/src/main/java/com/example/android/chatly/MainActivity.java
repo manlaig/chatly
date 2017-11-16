@@ -75,47 +75,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        //When we override this method, we can display our custom menu on the screen
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        //This method called when the user opens the menu and presses sign out
-        switch(item.getItemId())
-        {
-            case R.id.sign_out_button:
-                AuthUI.getInstance().signOut(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //when we request from Firebase and a result comes back,
-        //that result is sent using this method with the result
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SIGN_IN_REQUEST_CODE)
-        {
-            if(resultCode == RESULT_CANCELED)
-                finish();
-            else
-                Toast.makeText(this, "Successfully signed it!", Toast.LENGTH_SHORT).show();
-        }
-        else if(requestCode == PHOTO_PICKER_REQUEST_CODE && resultCode == RESULT_OK)
-        {
-            storePhotoAndDisplay(data);
-        }
-    }
-
     private void initializeInstanceVariables()
     {
         messageListView = findViewById(R.id.messageListView);
@@ -274,4 +233,45 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        //When we override this method, we can display our custom menu on the screen
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //This method called when the user opens the menu and presses sign out
+        switch(item.getItemId())
+        {
+            case R.id.sign_out_button:
+                AuthUI.getInstance().signOut(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //when we request from Firebase and a result comes back,
+        //that result is sent using this method with the result
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == SIGN_IN_REQUEST_CODE)
+        {
+            if(resultCode == RESULT_CANCELED)
+                finish();
+            else
+                Toast.makeText(this, "Successfully signed it!", Toast.LENGTH_SHORT).show();
+        }
+        else if(requestCode == PHOTO_PICKER_REQUEST_CODE && resultCode == RESULT_OK)
+        {
+            storePhotoAndDisplay(data);
+        }
+    }
 }
