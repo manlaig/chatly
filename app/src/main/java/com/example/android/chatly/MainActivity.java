@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //I've split the code into many small methods to simplify the onCreate method
-        // and increase readability
+        // and to increase readability
         initializeInstanceVariables();
         initializeAndSetArrayAdapter();
         initializeFirebaseVariables();
