@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private Button sendButton;
 
     private String username;
-    private ArrayList<Message> messageList;
     private MessageAdapter messageAdapter;
 
     private FirebaseAuth firebaseAuth;
@@ -63,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //I've split the code into many small methods to simplify the onCreate method
-        // and to increase readability
         initializeInstanceVariables();
         initializeAndSetArrayAdapter();
         initializeFirebaseVariables();
@@ -86,8 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeAndSetArrayAdapter()
     {
-        messageList = new ArrayList<>();
-        messageAdapter = new MessageAdapter(this, R.layout.message_item, messageList);
+        messageAdapter = new MessageAdapter(this, R.layout.message_item, new ArrayList<Message>());
         messageListView.setAdapter(messageAdapter);
     }
 
@@ -220,24 +216,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void storePhotoAndDisplay(Intent data)
-    {
-        Uri chosenPhotoUri = data.getData();
-        StorageReference storageReferenceToSave = storageReference.child(chosenPhotoUri.getLastPathSegment());
-        storageReferenceToSave.putFile(chosenPhotoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Uri downloadUriInStorage = taskSnapshot.getDownloadUrl();
-                databaseReference.push().setValue(new Message(null, username, downloadUriInStorage.toString()));
-            }
-        });
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        //When we override this method, we can display our custom menu on the screen
+        //displaying custom menu on the screen
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_main, menu);
         return true;
@@ -260,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //when we request from Firebase and a result comes back,
-        //that result is sent using this method with the result
+        //its sent with this method
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == SIGN_IN_REQUEST_CODE)
         {
@@ -273,5 +255,18 @@ public class MainActivity extends AppCompatActivity {
         {
             storePhotoAndDisplay(data);
         }
+    }
+
+    private void storePhotoAndDisplay(Intent data)
+    {
+        Uri chosenPhotoUri = data.getData();
+        StorageReference storageReferenceToSave = storageReference.child(chosenPhotoUri.getLastPathSegment());
+        storageReferenceToSave.putFile(chosenPhotoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Uri downloadUriInStorage = taskSnapshot.getDownloadUrl();
+                databaseReference.push().setValue(new Message(null, username, downloadUriInStorage.toString()));
+            }
+        });
     }
 }

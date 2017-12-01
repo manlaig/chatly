@@ -19,8 +19,7 @@ import java.util.ArrayList;
 public class MessageAdapter extends ArrayAdapter<Message>
 {
     private View viewToConvertToMessage;
-    private TextView text;
-    private TextView name;
+    private TextView text, name;
     private ImageView image;
     private Message message;
     private boolean hasPhoto;
