@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initializeInstanceVariables();
-        initializeAndSetArrayAdapter();
+        setArrayAdapter();
         initializeFirebaseVariables();
         authorizeAndManageStates();
         addListenerToEditText();
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void initializeAndSetArrayAdapter()
+    private void setArrayAdapter()
     {
         messageAdapter = new MessageAdapter(this, R.layout.message_item, new ArrayList<Message>());
         messageListView.setAdapter(messageAdapter);
@@ -102,8 +102,7 @@ public class MainActivity extends AppCompatActivity {
     {
         editTextField.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(charSequence.toString().trim().length() > 0)
@@ -112,8 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     sendButton.setEnabled(false);
             }
             @Override
-            public void afterTextChanged(Editable editable) {
-            }
+            public void afterTextChanged(Editable editable) { }
         });
     }
 
@@ -140,36 +138,9 @@ public class MainActivity extends AppCompatActivity {
                 intent.setType("image/jpeg");
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                 startActivityForResult(Intent.createChooser(intent, "Complete Action Using"), PHOTO_PICKER_REQUEST_CODE);
+                //the result is returned using onActivityResult()
             }
         });
-    }
-
-
-    private void attachListenerToDatabaseReference() {
-        //whenever a new message gets added to database, this method notifies us. And we display it
-
-        if (childEventListener == null) {
-            childEventListener = new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Message tempMessage = dataSnapshot.getValue(Message.class);
-                    messageAdapter.add(tempMessage);
-                }
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                }
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-                }
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            };
-            databaseReference.addChildEventListener(childEventListener);
-        }
     }
 
 
@@ -180,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
-                //Overriding this method returns either a value if signed in and NULL if not signed it
+                // user != null is true if they signed in
                 if(user != null)
                     onSignedInInitialize(user.getDisplayName());
                 else
@@ -209,6 +180,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void attachListenerToDatabaseReference() {
+        //when a new message added to database, this method notifies us. And we display it
+
+        if (childEventListener == null) {
+            childEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Message tempMessage = dataSnapshot.getValue(Message.class);
+                    messageAdapter.add(tempMessage);
+                }
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) { }
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) { }
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) { }
+                @Override
+                public void onCancelled(DatabaseError databaseError) { }
+            };
+            databaseReference.addChildEventListener(childEventListener);
+        }
+    }
+
+
     private void onSignedOutCleanUp()
     {
         username = ANONYMOUS;
@@ -228,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //This method called when the user opens the menu and presses sign out
+        //Called when the user presses sign out in menu
         switch(item.getItemId())
         {
             case R.id.sign_out_button:
@@ -252,9 +247,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Successfully signed it!", Toast.LENGTH_SHORT).show();
         }
         else if(requestCode == PHOTO_PICKER_REQUEST_CODE && resultCode == RESULT_OK)
-        {
             storePhotoAndDisplay(data);
-        }
     }
 
     private void storePhotoAndDisplay(Intent data)
