@@ -6,9 +6,7 @@ package com.example.android.chatly;
 
 public class Message
 {
-    private String text;
-    private String name;
-    private String photoURL;
+    private String text, name, photoURL;
 
     public Message() { }
 
