@@ -151,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
-                // user != null is true if they signed in
                 if(user != null)
                     onSignedInInitialize(user.getDisplayName());
                 else
