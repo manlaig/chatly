@@ -35,7 +35,10 @@ public class MessageAdapter extends ArrayAdapter<Message>
     public View getView(int position, View convertView, ViewGroup parent)
     {
         viewToConvertToMessage = convertView;
-        inflateViewToMessageItem(parent);
+
+        if(viewToConvertToMessage == null)
+            viewToConvertToMessage = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.message_item, parent, false);
+
         initializeMessageFields();
 
         message = getItem(position);
@@ -44,13 +47,6 @@ public class MessageAdapter extends ArrayAdapter<Message>
         drawMessage();
 
         return viewToConvertToMessage;
-    }
-
-
-    private void inflateViewToMessageItem(ViewGroup parent)
-    {
-        if(viewToConvertToMessage == null)
-            viewToConvertToMessage = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.message_item, parent, false);
     }
 
 
