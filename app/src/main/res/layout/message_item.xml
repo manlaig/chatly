@@ -17,7 +17,7 @@
         android:id="@+id/text_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Message"
+        android:text="@string/message_text"
         android:textColor="@android:color/black"
         android:textAppearance="?android:textAppearanceLarge"
         android:layout_weight="0"/>
@@ -26,7 +26,7 @@
         android:id="@+id/name_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name"
+        android:text="@string/message_name"
         android:textAppearance="?android:textAppearanceSmall"/>
 
 
