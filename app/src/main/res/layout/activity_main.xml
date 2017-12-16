@@ -12,7 +12,7 @@
 
     <ListView
         android:id="@+id/messageListView"
-        android:layout_above="@id/linearlayout"
+        android:layout_above="@id/linear"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
@@ -23,7 +23,7 @@
         tools:listitem="@layout/message_item" />
 
     <LinearLayout
-        android:id="@+id/linearlayout"
+        android:id="@+id/linear"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="SEND"/>
+            android:text="@string/send"/>
 
     </LinearLayout>
 

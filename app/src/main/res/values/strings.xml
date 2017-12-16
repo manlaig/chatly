@@ -3,4 +3,5 @@
     <string name="sign_out">Sign Out</string>
     <string name="message_name">Name</string>
     <string name="message_text">Message</string>
+    <string name="send">SEND</string>
 </resources>
