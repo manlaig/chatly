@@ -181,9 +181,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void attachListenerToDatabaseReference() {
         //when a new message added to database, this method notifies us. And we display it
-
-        if (childEventListener == null) {
-            childEventListener = new ChildEventListener() {
+        databaseReference.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Message tempMessage = dataSnapshot.getValue(Message.class);
@@ -197,9 +195,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onChildMoved(DataSnapshot dataSnapshot, String s) { }
                 @Override
                 public void onCancelled(DatabaseError databaseError) { }
-            };
-            databaseReference.addChildEventListener(childEventListener);
-        }
+            });
     }
 
 
