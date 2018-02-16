@@ -172,8 +172,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void onSignedInInitialize(String username)
-    {
+        private void onSignedInInitialize(String username)
+        {
         this.username = username;
         attachListenerToDatabaseReference();
     }
@@ -182,20 +182,20 @@ public class MainActivity extends AppCompatActivity {
     private void attachListenerToDatabaseReference() {
         //when a new message added to database, this method notifies us. And we display it
         databaseReference.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Message tempMessage = dataSnapshot.getValue(Message.class);
-                    messageAdapter.add(tempMessage);
-                }
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) { }
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) { }
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) { }
-                @Override
-                public void onCancelled(DatabaseError databaseError) { }
-            });
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Message tempMessage = dataSnapshot.getValue(Message.class);
+                messageAdapter.add(tempMessage);
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) { }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) { }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) { }
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
     }
 
 
